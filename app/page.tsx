@@ -1,103 +1,194 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import type React from "react"
+
+import { useState } from "react"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { AdminDashboard } from "@/components/admin-dashboard"
+import { UserDashboard } from "@/components/user-dashboard"
+import AdminSettings from "@/components/admin-settings"
+import { BarChart3, Users, User, Settings } from "lucide-react"
+
+type UserRole = "admin" | "user"
+type ViewType = "admin" | "user" | "settings"
+
+interface AppUser {
+  username: string
+  role: UserRole
+  userId?: string
+}
+
+export default function HomePage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState<AppUser | null>(null)
+  const [currentView, setCurrentView] = useState<ViewType>("admin")
+  const [username, setUsername] = useState("")
+  const [userId, setUserId] = useState("")
+  const [role, setRole] = useState<UserRole>("user")
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (username.trim()) {
+      setUser({
+        username,
+        role,
+        userId: role === "user" ? userId : undefined,
+      })
+      setIsLoggedIn(true)
+      setCurrentView(role === "admin" ? "admin" : "user")
+    }
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+    setUser(null)
+    setUsername("")
+    setUserId("")
+    setRole("user")
+    setCurrentView("admin")
+  }
+
+  const handleGoogleLogin = () => {
+    // Simulate Google OAuth login - replace with actual Google OAuth implementation
+    const mockUser = {
+      username: "Google User",
+      role: "admin" as UserRole, // Default to admin, can be determined from Google profile
+      userId: "google-user-123",
+    }
+    setUser(mockUser)
+    setIsLoggedIn(true)
+    setCurrentView(mockUser.role === "admin" ? "admin" : "user")
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <Sidebar>
+          <SidebarHeader className="border-b">
+            <div className="flex items-center gap-2 px-2 py-2">
+              <BarChart3 className="h-6 w-6" />
+              <span className="font-semibold">Bonus Tracker</span>
+            </div>
+          </SidebarHeader>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+          <SidebarContent>
+            <SidebarMenu>
+              {isLoggedIn && user ? (
+                user.role === "admin" ? (
+                  <>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton isActive={currentView === "admin"} onClick={() => setCurrentView("admin")}>
+                        <Users className="h-4 w-4" />
+                        <span>Admin Dashboard</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton isActive={currentView === "user"} onClick={() => setCurrentView("user")}>
+                        <User className="h-4 w-4" />
+                        <span>User View</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        isActive={currentView === "settings"}
+                        onClick={() => setCurrentView("settings")}
+                      >
+                        <Settings className="h-4 w-4" />
+                        <span>Settings</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </>
+                ) : (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton isActive={true}>
+                      <User className="h-4 w-4" />
+                      <span>My Dashboard</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              ) : (
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={handleGoogleLogin}>
+                    <User className="h-4 w-4" />
+                    <span>Login with Google</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
+          </SidebarContent>
+
+          {isLoggedIn && user && (
+            <SidebarFooter className="border-t">
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={handleLogout}>
+                    <User className="h-4 w-4" />
+                    <span>Logout</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+              <div className="px-2 py-2 text-xs text-muted-foreground">
+                {user.username} ({user.role})
+              </div>
+            </SidebarFooter>
+          )}
+        </Sidebar>
+
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-semibold">
+                {isLoggedIn && user
+                  ? user.role === "admin"
+                    ? currentView === "admin"
+                      ? "Admin Dashboard"
+                      : currentView === "settings"
+                        ? "Settings"
+                        : "User View"
+                    : "My Dashboard"
+                  : "Welcome - Please Login"}
+              </h1>
+            </div>
+          </header>
+
+          <main className="flex-1 p-6">
+            {isLoggedIn && user ? (
+              user.role === "admin" ? (
+                currentView === "admin" ? (
+                  <AdminDashboard />
+                ) : currentView === "settings" ? (
+                  <AdminSettings />
+                ) : (
+                  <UserDashboard userId="demo-user" />
+                )
+              ) : (
+                <UserDashboard userId={user.userId!} />
+              )
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <h2 className="text-2xl font-semibold mb-2">Welcome to Bonus Tracker</h2>
+                  <p className="text-muted-foreground">
+                    Please click "Login with Google" in the sidebar to access your dashboard.
+                  </p>
+                </div>
+              </div>
+            )}
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
+  )
 }
