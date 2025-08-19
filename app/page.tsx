@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -14,50 +14,51 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { AdminDashboard } from "@/components/admin-dashboard"
-import { UserDashboard } from "@/components/user-dashboard"
-import AdminSettings from "@/components/admin-settings"
-import { BarChart3, Users, User, Settings } from "lucide-react"
+} from "@/components/ui/sidebar";
 
-type UserRole = "admin" | "user"
-type ViewType = "admin" | "user" | "settings"
+import { UserDashboard } from "@/components/user-dashboard";
+import AdminSettings from "@/components/admin-settings";
+import { BarChart3, Users, User, Settings } from "lucide-react";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
+
+type UserRole = "admin" | "user";
+type ViewType = "admin" | "user" | "settings";
 
 interface AppUser {
-  username: string
-  role: UserRole
-  userId?: string
+  username: string;
+  role: UserRole;
+  userId?: string;
 }
 
 export default function HomePage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState<AppUser | null>(null)
-  const [currentView, setCurrentView] = useState<ViewType>("admin")
-  const [username, setUsername] = useState("")
-  const [userId, setUserId] = useState("")
-  const [role, setRole] = useState<UserRole>("user")
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<AppUser | null>(null);
+  const [currentView, setCurrentView] = useState<ViewType>("admin");
+  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("");
+  const [role, setRole] = useState<UserRole>("user");
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (username.trim()) {
       setUser({
         username,
         role,
         userId: role === "user" ? userId : undefined,
-      })
-      setIsLoggedIn(true)
-      setCurrentView(role === "admin" ? "admin" : "user")
+      });
+      setIsLoggedIn(true);
+      setCurrentView(role === "admin" ? "admin" : "user");
     }
-  }
+  };
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
-    setUser(null)
-    setUsername("")
-    setUserId("")
-    setRole("user")
-    setCurrentView("admin")
-  }
+    setIsLoggedIn(false);
+    setUser(null);
+    setUsername("");
+    setUserId("");
+    setRole("user");
+    setCurrentView("admin");
+  };
 
   const handleGoogleLogin = () => {
     // Simulate Google OAuth login - replace with actual Google OAuth implementation
@@ -65,11 +66,11 @@ export default function HomePage() {
       username: "Google User",
       role: "admin" as UserRole, // Default to admin, can be determined from Google profile
       userId: "google-user-123",
-    }
-    setUser(mockUser)
-    setIsLoggedIn(true)
-    setCurrentView(mockUser.role === "admin" ? "admin" : "user")
-  }
+    };
+    setUser(mockUser);
+    setIsLoggedIn(true);
+    setCurrentView(mockUser.role === "admin" ? "admin" : "user");
+  };
 
   return (
     <SidebarProvider>
@@ -88,13 +89,19 @@ export default function HomePage() {
                 user.role === "admin" ? (
                   <>
                     <SidebarMenuItem>
-                      <SidebarMenuButton isActive={currentView === "admin"} onClick={() => setCurrentView("admin")}>
+                      <SidebarMenuButton
+                        isActive={currentView === "admin"}
+                        onClick={() => setCurrentView("admin")}
+                      >
                         <Users className="h-4 w-4" />
                         <span>Admin Dashboard</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                      <SidebarMenuButton isActive={currentView === "user"} onClick={() => setCurrentView("user")}>
+                      <SidebarMenuButton
+                        isActive={currentView === "user"}
+                        onClick={() => setCurrentView("user")}
+                      >
                         <User className="h-4 w-4" />
                         <span>User View</span>
                       </SidebarMenuButton>
@@ -155,8 +162,8 @@ export default function HomePage() {
                     ? currentView === "admin"
                       ? "Admin Dashboard"
                       : currentView === "settings"
-                        ? "Settings"
-                        : "User View"
+                      ? "Settings"
+                      : "User View"
                     : "My Dashboard"
                   : "Welcome - Please Login"}
               </h1>
@@ -179,9 +186,12 @@ export default function HomePage() {
             ) : (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
-                  <h2 className="text-2xl font-semibold mb-2">Welcome to Bonus Tracker</h2>
+                  <h2 className="text-2xl font-semibold mb-2">
+                    Welcome to Bonus Tracker
+                  </h2>
                   <p className="text-muted-foreground">
-                    Please click "Login with Google" in the sidebar to access your dashboard.
+                    Please click "Login with Google" in the sidebar to access
+                    your dashboard.
                   </p>
                 </div>
               </div>
@@ -190,5 +200,5 @@ export default function HomePage() {
         </SidebarInset>
       </div>
     </SidebarProvider>
-  )
+  );
 }
