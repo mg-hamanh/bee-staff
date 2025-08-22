@@ -24,11 +24,11 @@ export function DashboardTable({ data, visibleColumns }: DashboardTableProps) {
       <TableHeader>
         <TableRow>
           {visibleColumns.name && <TableHead>Name</TableHead>}
-          {visibleColumns.sale_id && <TableHead>Sale ID</TableHead>}
+          {visibleColumns.saleId && <TableHead>Sale ID</TableHead>}
           {visibleColumns.invoices && (
             <TableHead className="text-right">Invoices</TableHead>
           )}
-          {visibleColumns.valid_invoices && (
+          {visibleColumns.validInvoices && (
             <TableHead className="text-right">Valid Invoices</TableHead>
           )}
           {visibleColumns.products && (
@@ -37,16 +37,16 @@ export function DashboardTable({ data, visibleColumns }: DashboardTableProps) {
           {visibleColumns.revenue && (
             <TableHead className="text-right">Revenue</TableHead>
           )}
-          {visibleColumns.current_bonus && (
+          {visibleColumns.currentBonus && (
             <TableHead className="text-right">Current Bonus</TableHead>
           )}
-          {visibleColumns.next_target && (
+          {visibleColumns.nextTarget && (
             <TableHead className="text-right">Next Target</TableHead>
           )}
-          {visibleColumns.min_target && (
+          {visibleColumns.minTarget && (
             <TableHead className="text-right">Min Target</TableHead>
           )}
-          {visibleColumns.target_percent && (
+          {visibleColumns.targetPercent && (
             <TableHead className="text-right">Target %</TableHead>
           )}
         </TableRow>
@@ -54,57 +54,57 @@ export function DashboardTable({ data, visibleColumns }: DashboardTableProps) {
 
       <TableBody>
         {data.map((user) => (
-          <TableRow key={user.sale_id}>
-            {visibleColumns.name && <TableCell>{user.full_name}</TableCell>}
-            {visibleColumns.sale_id && <TableCell>{user.sale_id}</TableCell>}
+          <TableRow key={user.saleId}>
+            {visibleColumns.name && <TableCell>{user.name}</TableCell>}
+            {visibleColumns.saleId && <TableCell>{user.saleId}</TableCell>}
             {visibleColumns.invoices && (
               <TableCell className="text-right">
                 <span className="font-semibold">
-                  {user.current_total_invoices}
+                  {user.currentTotalInvoices}
                 </span>
-                <GrowthCell value={user.growth_invoices_percent} />
+                <GrowthCell value={user.growthInvoicesPercent} />
               </TableCell>
             )}
-            {visibleColumns.valid_invoices && (
+            {visibleColumns.validInvoices && (
               <TableCell className="text-right">
                 <span className="font-semibold">
-                  {user.current_valid_invoices}
+                  {user.currentValidInvoices}
                 </span>
-                <GrowthCell value={user.growth_valid_invoices_percent} />
+                <GrowthCell value={user.growthValidInvoicesPercent} />
               </TableCell>
             )}
             {visibleColumns.products && (
               <TableCell className="text-right">
                 <span className="font-semibold">
-                  {user.current_total_products}
+                  {user.currentTotalProducts}
                 </span>
-                <GrowthCell value={user.growth_products_percent} />
+                <GrowthCell value={user.growthProductsPercent} />
               </TableCell>
             )}
             {visibleColumns.revenue && (
               <TableCell className="text-right">
                 <span className="font-semibold">
-                  {formatCurrency(user.current_total_revenues)}
+                  {formatCurrency(user.currentTotalRevenues)}
                 </span>
-                <GrowthCell value={user.growth_revenues_percent} />
+                <GrowthCell value={user.growthRevenuesPercent} />
               </TableCell>
             )}
-            {visibleColumns.current_bonus && (
+            {visibleColumns.currentBonus && (
               <TableCell className="text-right">
-                {user.current_bonus ? (
-                  <Badge>{formatCurrency(user.current_bonus)}</Badge>
+                {user.currentBonus ? (
+                  <Badge>{formatCurrency(user.currentBonus)}</Badge>
                 ) : (
                   <span className="text-muted-foreground">-</span>
                 )}
               </TableCell>
             )}
-            {visibleColumns.next_target && (
+            {visibleColumns.nextTarget && (
               <TableCell className="text-right">
-                {user.next_target_amount ? (
+                {user.nextTargetAmount ? (
                   <div className="flex flex-col items-end text-sm">
-                    <span>{formatCurrency(user.next_target_amount)}</span>
+                    <span>{formatCurrency(user.nextTargetAmount)}</span>
                     <span className="text-green-600 text-xs">
-                      {formatCurrency(user.next_bonus ?? "0")}
+                      {formatCurrency(user.nextBonus ?? "0")}
                     </span>
                   </div>
                 ) : (
@@ -112,20 +112,20 @@ export function DashboardTable({ data, visibleColumns }: DashboardTableProps) {
                 )}
               </TableCell>
             )}
-            {visibleColumns.min_target && (
+            {visibleColumns.minTarget && (
               <TableCell className="text-right">
-                {user.min_target_amount ? (
+                {user.minTargetAmount ? (
                   <span className="font-semibold">
-                    {formatCurrency(user.min_target_amount)}
+                    {formatCurrency(user.minTargetAmount)}
                   </span>
                 ) : (
                   <span className="text-muted-foreground">-</span>
                 )}
               </TableCell>
             )}
-            {visibleColumns.target_percent && (
+            {visibleColumns.targetPercent && (
               <TableCell className="text-right">
-                <TargetCell percent={user.target_percent} />
+                <TargetCell percent={user.targetPercent} />
               </TableCell>
             )}
           </TableRow>

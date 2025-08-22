@@ -1,3 +1,5 @@
+"use client";
+
 import { Loader2 } from "lucide-react";
 import { useBonusReport } from "./hooks/useBonusReport";
 import { DashboardToolbar } from "./DashboardToolbar";

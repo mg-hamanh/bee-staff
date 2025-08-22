@@ -1,18 +1,20 @@
 // /app/api/bonus-report/route.ts (Next.js 13+)
-import { NextResponse } from "next/server";
-import { fetchBonusReport } from "@/lib/data";
+import { NextRequest, NextResponse } from "next/server";
+import { fetchBonusReport } from "@/app/api/bonus-report/controller";
+import { getCompareRange } from "@/utils/formatters";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const user_id = searchParams.get("user_id");
-  const start_date = searchParams.get("start_date");
-  const end_date = searchParams.get("end_date");
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+
+  const userId = body.userId;
+  const period = body.period;
+  const data = getCompareRange(period);
 
   try {
-    const reports = await fetchBonusReport({
-      user_id: user_id ? Number(user_id) : undefined,
-      start_date: start_date ?? undefined,
-      end_date: end_date ?? undefined,
+    const reports =
+    await fetchBonusReport({
+      userId: userId,
+      date: data,
     });
     return NextResponse.json(reports);
   } catch (err: any) {

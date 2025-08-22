@@ -1,30 +1,65 @@
+import { User } from "@/lib/zod/schema";
+
 export interface BonusReport {
-  sale_id: number;
-  full_name: string;
+  saleId: string;
+  name: string;
 
-  current_total_invoices: number;
-  last_total_invoices: number;
+  currentTotalInvoices: number;
+  lastTotalInvoices: number;
 
-  current_valid_invoices: number;
-  last_valid_invoices: number;
+  currentValidInvoices: number;
+  lastValidInvoices: number;
 
-  current_total_products: number;
-  last_total_products: number;
+  currentTotalProducts: number;
+  lastTotalProducts: number;
 
-  current_total_revenues: number;
-  last_total_revenues: number;
+  currentTotalRevenues: number;
+  lastTotalRevenues: number;
 
-  growth_invoices_percent: number;
-  growth_valid_invoices_percent: number;
-  growth_products_percent: number;
-  growth_revenues_percent: number;
+  growthInvoicesPercent: number | null;
+  growthValidInvoicesPercent: number | null;
+  growthProductsPercent: number | null;
+  growthRevenuesPercent: number | null;
 
-  min_target_amount: number;
-  target_percent: number;
+  minTargetAmount: number;
+  targetPercent: number | null;
 
-  current_target_amount: number | null; 
-  current_bonus: number | null;
+  currentTargetAmount: number | null;
+  currentBonus: number | null;
 
-  next_target_amount: number;
-  next_bonus: number;
+  nextTargetAmount: number | null;
+  nextBonus: number | null;
 }
+
+export type BonusLevelUI = {
+  clientId?: string;
+  id?: string;
+  amount: number;
+  unit: "PERCENT" | "VND";
+  bonus: number;
+};
+
+export type BonusTemplateUI = {
+  clientId?: string;
+  id?: string;
+  status: boolean;
+  type: number;
+  mode: number;
+  description?: string;
+  bonusLevels: BonusLevelUI[]; 
+};
+
+export type PayRateTemplateUI =  {
+  id?: string;
+  name: string;
+  bonusTemplates?: BonusTemplateUI[];
+  users: User[];
+  totalUser: number;
+};
+
+export type UsersResponse = {
+  users: User[];
+  total: number;
+  page: number;
+  totalPages: number;
+};

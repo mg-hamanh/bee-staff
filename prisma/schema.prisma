@@ -1,0 +1,419 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Unit {
+  PERCENT
+  VND
+
+  @@map("units")
+}
+
+model Account {
+  id                    String    @id
+  userId                String    @map("user_id")
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(6)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(6)
+  scope                 String?
+  idToken               String?   @map("id_token")
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  users                 User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("app_accounts")
+}
+
+model Category {
+  id       Int       @id
+  parentId Int?      @map("parent_id")
+  name     String    @db.VarChar(255)
+  code     String    @db.VarChar(50)
+  status   Boolean?
+  image    String?   @db.VarChar(255)
+  products Product[]
+
+  @@map("categories")
+}
+
+model Depot {
+  id         Int     @id
+  code       String? @db.VarChar(255)
+  name       String? @db.VarChar(255)
+  mobile     String? @db.VarChar(15)
+  cityId     Int?    @map("city_id")
+  districtId Int?    @map("district_id")
+  wardId     Int?    @map("ward_id")
+  address    String?
+
+  @@map("depots")
+}
+
+model Inventory {
+  productId       Int     @map("product_id")
+  depotId         Int     @map("depot_id")
+  remain          Int?    @default(0)
+  shipping        Int?    @default(0)
+  damaged         Int?    @default(0)
+  holding         Int?    @default(0)
+  warranty        Int?    @default(0)
+  warrantyHolding Int?    @default(0) @map("warranty_holding")
+  available       Int?    @default(0)
+  transfering     Int?    @default(0)
+  products        Product @relation(fields: [productId], references: [idNhanh])
+
+  @@id([productId, depotId])
+  @@map("inventory")
+}
+
+model InvoiceDetail {
+  invoiceId     BigInt   @map("invoice_id")
+  productId     Int      @map("product_id")
+  quantity      Int?
+  price         Decimal? @db.Decimal
+  discount      Decimal? @db.Decimal
+  discountRatio Decimal? @map("discount_ratio") @db.Decimal
+  money         Decimal? @db.Decimal
+  id            String   @id @db.VarChar(50)
+  invoices      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products      Product  @relation(fields: [productId], references: [idNhanh], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([invoiceId], map: "idx_invoice_details_invoice_id")
+  @@index([productId], map: "idx_invoice_details_product_id")
+  @@map("invoice_details")
+}
+
+model Invoice {
+  id               BigInt          @id
+  relatedBillId    BigInt?         @map("related_bill_id")
+  orderId          BigInt?         @map("order_id")
+  depotId          Int?            @map("depot_id")
+  date             DateTime?       @db.Date
+  createdDateTime  DateTime?       @map("created_date_time") @db.Timestamp(6)
+  modifiedDateTime DateTime?       @map("modified_date_time") @db.Timestamp(6)
+  customerId       BigInt?         @map("customer_id")
+  saleId           Int?            @map("sale_id")
+  type             Int?
+  mode             Int?
+  createdById      Int?            @map("created_by_id")
+  technicalId      Int?            @map("technical_id")
+  discount         Decimal?        @db.Decimal
+  money            Decimal?        @db.Decimal
+  returnFee        Decimal?        @map("return_fee") @db.Decimal
+  payment          Decimal?        @db.Decimal
+  description      String?
+  couponCode       String?         @map("coupon_code") @db.VarChar(255)
+  couponValue      Decimal?        @map("coupon_value") @db.Decimal
+  tags             String[]        @db.VarChar(255)
+  isDeleted        Boolean?        @default(false) @map("is_deleted")
+  syncKey          Int?            @map("sync_key")
+  invoice_details  InvoiceDetail[]
+
+  @@map("invoices")
+}
+
+model PayRateTemplate {
+  id             String          @id @default(uuid())
+  name           String?
+  bonusTemplates BonusTemplate[]
+  users          User[]
+
+  @@map("pay_rate_templates")
+}
+
+model BonusTemplate {
+  id              String          @id @default(uuid())
+  templateId      String          @map("template_id")
+  type            Int
+  mode            Int
+  description     String?
+  status          Boolean         @default(false)
+  PayRateTemplate PayRateTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  bonusLevels BonusLevel[]
+
+  @@map("bonus_templates")
+}
+
+model BonusLevel {
+  id            String        @id @default(uuid())
+  templateId    String        @map("template_id")
+  amount        Int           @default(0)
+  unit          Unit
+  bonus         Decimal       @default(0)
+  bonusTemplate BonusTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("bonus_levels")
+}
+
+model PriceHistory {
+  id              Int       @id @default(autoincrement())
+  parentCode      String    @map("parent_code") @db.VarChar(255)
+  oldPrice        Decimal   @map("old_price") @db.Decimal(10, 2)
+  newPrice        Decimal   @map("new_price") @db.Decimal(10, 2)
+  discountedLevel Decimal?  @map("discounted_level") @db.Decimal(5, 2)
+  discountedDate  DateTime? @map("discounted_date") @db.Timestamp(6)
+
+  @@map("price_histories")
+}
+
+model Product {
+  id              BigInt          @default(autoincrement())
+  idNhanh         Int             @id @unique(map: "products_id_nhanh_idx") @map("id_nhanh")
+  parentId        Int?            @map("parent_id")
+  brandId         Int?            @map("brand_id")
+  categoryId      Int?            @map("category_id")
+  code            String?         @db.VarChar(100)
+  barcode         String?         @db.VarChar(50)
+  name            String?         @db.VarChar(255)
+  importPrice     Decimal?        @map("import_price") @db.Decimal(10, 2)
+  price           Decimal?        @db.Decimal(10, 2)
+  image           String?
+  color           String?         @db.VarChar(50)
+  size            String?         @db.VarChar(20)
+  status          String?         @db.VarChar(50)
+  createdDateTime DateTime?       @map("created_date_time") @db.Timestamp(6)
+  updatedAt       BigInt?         @map("updated_at")
+  modifiedAt      DateTime?       @map("modified_at") @db.Date
+  parentCode      String?         @map("parent_code") @db.VarChar(50)
+  sampleCode      String?         @map("sample_code") @db.VarChar(100)
+  images          String[]
+  syncAt          BigInt?         @map("sync_at")
+  cost            Decimal         @default(0.00) @db.Decimal(10, 2)
+  inventory       Inventory[]
+  invoiceDetails  InvoiceDetail[]
+  categories      Category?       @relation(fields: [categoryId], references: [id])
+  products        Product?        @relation("productsToproducts", fields: [parentId], references: [idNhanh])
+  otherProducts   Product[]       @relation("productsToproducts")
+
+  @@index([categoryId], map: "idx_products_category_id")
+  @@index([idNhanh], map: "idx_products_product_id")
+  @@map("products")
+}
+
+model Session {
+  id        String   @id @db.VarChar(255)
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  userAgent String?  @map("user_agent") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  token     String   @unique @db.VarChar(45)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  userId    String   @map("user_id")
+  users     User     @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
+}
+
+model User {
+  id              String           @id
+  username        String?          @db.VarChar(100)
+  name            String?          @map("full_name") @db.VarChar(255)
+  email           String?          @unique(map: "users_email_unique") @db.VarChar(255)
+  mobile          String?          @db.VarChar(15)
+  roleName        String?          @map("role_name") @db.VarChar(100)
+  depots          Int[]
+  emailVerified   DateTime?        @db.Timestamptz(6)
+  image           String?
+  roleId          Int              @map("role_id")
+  createdAt       DateTime?        @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime?        @default(now()) @map("updated_at") @db.Timestamp(6)
+  isAdmin         Boolean          @default(false) @map("is_admin")
+  payRateId       String?          @map("pay_rate_id")
+  accounts        Account[]
+  sessions        Session[]
+  payRateTemplate PayRateTemplate? @relation(fields: [payRateId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("users")
+}
+
+model Verification {
+  id         String   @id @db.VarChar(255)
+  identifier String
+  value      String   @unique
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  @@map("verification")
+}
+
+model account_mode {
+  id        Int    @id
+  mode_name String @db.VarChar(255)
+
+  @@ignore
+}
+
+model accounts {
+  id         Int       @id @default(autoincrement())
+  code       String?   @db.VarChar(50)
+  name       String?   @db.VarChar(255)
+  depot_id   Int?
+  status     Boolean?
+  created_by String?   @db.VarChar(255)
+  created_at DateTime? @db.Date
+
+  @@ignore
+}
+
+model bank_transactions {
+  id               Int           @id @default(autoincrement())
+  transaction_id   Int?
+  date_transfer    DateTime      @db.Timestamp(6)
+  receiver_account String?       @db.VarChar(20)
+  amount           BigInt
+  full_description String?
+  transaction_code String?       @db.VarChar(50)
+  sender_account   String?       @db.VarChar(20)
+  sender_bank      String?       @db.VarChar(20)
+  transaction_note String?
+  confirmed_by_id  Int?
+  transactions     transactions? @relation(fields: [transaction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction")
+
+  @@ignore
+}
+
+model inventory_receipt_items {
+  id                 Int                 @id @default(autoincrement())
+  receipt_id         BigInt?
+  product_id         Int?
+  order_item_id      Int?
+  quantity           Int?
+  price              Decimal?            @db.Decimal
+  money              Decimal?            @db.Decimal
+  inventory_receipts inventory_receipts? @relation(fields: [receipt_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([receipt_id, product_id], map: "unique_receipt_product")
+  @@index([product_id], map: "idx_receipt_details_product_id")
+  @@index([receipt_id], map: "idx_receipt_details_receipt_id")
+  @@ignore
+}
+
+model inventory_receipts {
+  id                      BigInt                    @id
+  depot_id                Int?
+  date                    DateTime?                 @db.Date
+  created_date_time       DateTime?                 @db.Timestamp(6)
+  modified_date_time      DateTime?                 @db.Timestamp(6)
+  type                    Int?
+  mode                    Int?
+  created_by_id           Int?
+  money                   Decimal?                  @db.Decimal
+  description             String?
+  is_deleted              Boolean?                  @default(false)
+  sync_key                Int?
+  inventory_receipt_items inventory_receipt_items[]
+
+  @@ignore
+}
+
+model order_items {
+  order_id       BigInt
+  product_id     Int
+  quantity       Int
+  price          Int
+  discount       Decimal? @default(0) @db.Decimal(10, 2)
+  discount_ratio Decimal? @default(0) @db.Decimal(5, 2)
+  money          Decimal  @db.Decimal(10, 2)
+  orders         orders   @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([order_id, product_id])
+  @@ignore
+}
+
+model orders {
+  id                       BigInt        @id
+  shop_order_id            String?       @db.VarChar(100)
+  channel                  Int?
+  ecom_shop_id             String?       @db.VarChar(100)
+  merchant_tracking_number String?       @db.VarChar(100)
+  depot_id                 Int?
+  money_discount           Int?          @default(0)
+  total_money              Int?          @default(0)
+  used_points              Int?          @default(0)
+  money_used_points        Int?          @default(0)
+  used_point_amount        Int?          @default(0)
+  carrier_id               Int?
+  ship_fee                 Int?          @default(0)
+  cod_fee                  Int?          @default(0)
+  customer_ship_fee        Int?          @default(0)
+  description              String?
+  private_description      String?
+  customer_id              BigInt?
+  receiver_name            String?       @db.VarChar(100)
+  receiver_mobile          String?       @db.VarChar(20)
+  receiver_city_id         Int?
+  receiver_district_id     Int?
+  receiver_ward_id         Int?
+  receiver_address         String?
+  created_by_id            Int?
+  sale_id                  Int?
+  created_datetime         DateTime?     @db.Timestamp(6)
+  delivery_date            DateTime?     @db.Timestamp(6)
+  send_carrier_date        DateTime?     @db.Timestamp(6)
+  status_name              String?
+  status_code              String?
+  calc_total_money         Int?
+  coupon_code              String?
+  coupon_value             Int?
+  updated_at               BigInt?
+  order_items              order_items[]
+
+  @@ignore
+}
+
+model telegram_topics {
+  id        Int     @id @default(autoincrement())
+  chat_id   BigInt
+  thread_id BigInt
+  title     String? @db.VarChar(255)
+
+  @@ignore
+}
+
+model transactions {
+  id                Int                 @id @default(autoincrement())
+  id_nhanh          BigInt?             @unique(map: "unique_id_nhanh")
+  date              DateTime?           @db.Date
+  type              Int?
+  contact_id        Int?
+  item_id           BigInt?
+  mode              Int?
+  amount            Decimal?            @db.Decimal(15, 2)
+  account_debit_id  Int?
+  account_credit_id Int?
+  description       String?
+  depot_id          Int?
+  created_by_id     Int?
+  created_date_time DateTime?           @db.Timestamp(6)
+  status            String?             @db.VarChar(50)
+  is_deleted        Boolean?            @default(false)
+  sync_key          Int?
+  bank_transactions bank_transactions[]
+
+  @@ignore
+}
+
+model zalo_messages {
+  msg_id         String    @id @db.VarChar(255)
+  thread_id      String?   @db.VarChar(255)
+  transaction_id BigInt?
+  content        String?
+  is_deleted     Boolean?  @default(false)
+  deleted_by_id  String?   @db.VarChar(255)
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@ignore
+}

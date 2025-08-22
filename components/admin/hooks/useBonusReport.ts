@@ -1,18 +1,21 @@
-import { fetchBonusReport } from "@/lib/data"
+'use client'
+
+import { useSession } from "@/context/SessionContext"
 import { BonusReport } from "@/types/type"
+import { Period } from "@/utils/formatters"
 import { useEffect, useState } from "react"
 
 export type VisibleColumns = {
   name: boolean
-  sale_id: boolean
+  saleId: boolean
   invoices: boolean
-  valid_invoices: boolean
+  validInvoices: boolean
   products: boolean
   revenue: boolean
-  current_bonus: boolean
-  next_target: boolean
-  min_target: boolean
-  target_percent: boolean
+  currentBonus: boolean
+  nextTarget: boolean
+  minTarget: boolean
+  targetPercent: boolean
 }
 
 export type VisibleColumnKey = keyof VisibleColumns
@@ -29,29 +32,42 @@ export interface UseSaleReportReturn {
 }
 
 export function useBonusReport(): UseSaleReportReturn {
+  const { session } = useSession();
   const [data, setData] = useState<BonusReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [period, setPeriod] = useState<Period>('month')
+  const [depotIds, setDepotIds] =useState<number[]>([])
 
   const [visibleColumns, setVisibleColumns] = useState<VisibleColumns>({
     name: true,
-    sale_id: true,
+    saleId: true,
     invoices: true,
-    valid_invoices: true,
+    validInvoices: true,
     products: true,
     revenue: true,
-    current_bonus: true,
-    next_target: true,
-    min_target: true,
-    target_percent: true,
+    currentBonus: true,
+    nextTarget: true,
+    minTarget: true,
+    targetPercent: true,
   });
 
   useEffect(() => {
+    if(!session) return;
+
     async function loadData() {
       try {
         setLoading(true);
-        const res = await fetch(`/api/bonus-report`);
+        const res = await fetch(`/api/bonus-report`,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            period,
+          }),
+        });
         if (!res.ok) throw new Error("Failed to fetch report");
         const result: BonusReport[] = await res.json();
         setData(result);
@@ -64,7 +80,7 @@ export function useBonusReport(): UseSaleReportReturn {
       }
     }
     loadData();
-  }, []);
+  }, [period]);
 
   const toggleColumn = (col: VisibleColumnKey) => {
     setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
