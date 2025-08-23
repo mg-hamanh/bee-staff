@@ -51,13 +51,6 @@ interface ManageUsersDialogProps {
   templateToEdit: PayRateTemplateUI | null;
 }
 
-const userSample: User = {
-  id: "new",
-  depots: [],
-  roleId: 1,
-  isAdmin: false,
-};
-
 export function ManageUsersDialog({
   isOpen,
   onOpenChange,
@@ -167,13 +160,7 @@ export function ManageUsersDialog({
                     <CommandEmpty>Không tìm thấy nhân viên.</CommandEmpty>
                     <CommandGroup>
                       {allUsers.map((u) => (
-                        <CommandItem
-                          key={u.id}
-                          value={u.name ?? ""}
-                          onSelect={(currentValue) => {
-                            setValue(currentValue === u.id ? "" : currentValue);
-                          }}
-                        >
+                        <CommandItem key={u.id} value={u.name ?? ""}>
                           {u.name}
                         </CommandItem>
                       ))}
