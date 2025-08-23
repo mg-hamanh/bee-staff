@@ -11,7 +11,7 @@ import {
   ChartPie,
   DollarSign,
 } from "lucide-react";
-import { BonusReport } from "@/types/type";
+import { BonusReport } from "@/types/type-ui";
 import { useSession } from "@/context/SessionContext";
 import { formatCurrency, formatPercent, Period } from "@/utils/formatters";
 import SemiCircleChart from "./bee-ui/SemiCircleChart";

@@ -1,6 +1,6 @@
 import prisma from "../../../lib/prisma";
 import { CompareRange } from "@/utils/formatters";
-import { BonusReport } from "@/types/type";
+import { BonusReport } from "@/types/type-ui";
 
 export async function fetchBonusReport(params: {
   userId?: number;

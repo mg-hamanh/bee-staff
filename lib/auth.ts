@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
-import {  customSession, oneTap } from 'better-auth/plugins'
+import { customSession, oneTap } from 'better-auth/plugins'
+import { APIError } from "better-auth/api";
 
 import prisma from './prisma'
 import { User } from './generated/prisma';
@@ -25,16 +26,10 @@ export const auth = betterAuth({
         defaultValue: null,
         input: false,
       },
-      roleId: {
-        type: 'number',
-        required: true,
-        defaultValue: 1, //1-nvbh, 2-nvtn, 3-cht, 
-      },
-      roleName: {
+      role: {
         type: 'string',
-        required: false,
-        defaultValue: 'Nhân viên bán hàng',
-        input: false,
+        required: true,
+        defaultValue: 'seller',
       },
       depots: {
         type: 'number[]',
@@ -44,7 +39,7 @@ export const auth = betterAuth({
       isAdmin: {
         type: 'boolean',
         required: false,
-        defaultValue: 'false',
+        defaultValue: false,
         input: false,
       },
       payRateId: {
@@ -61,6 +56,28 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       scope: ['profile', 'email'],
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user, ctx) => {
+          // Kiểm tra email tồn tại trong DB của anh
+          const existing = await prisma.user.findUnique({
+            where: { email: user.email },
+          });
+
+          if (!existing) {
+            // Chặn tạo user mới
+            throw new APIError("UNAUTHORIZED", {
+              message: "Email invalid.",
+            });
+          }
+
+          // Nếu có rồi thì trả về user để tiếp tục tạo session
+          return { data: user };  
+        },
+      },
     },
   },
   advanced: {
@@ -92,6 +109,9 @@ export const auth = betterAuth({
         depots: depotNames
       }
     })
-  ]
-
+  ],
+  onAPIError: {
+    throw: true,
+    errorURL: "/sign-in?error",
+  }
 });

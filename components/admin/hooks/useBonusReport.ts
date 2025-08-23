@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from "@/context/SessionContext"
-import { BonusReport } from "@/types/type"
+import { BonusReport } from "@/types/type-ui"
 import { Period } from "@/utils/formatters"
 import { useEffect, useState } from "react"
 

@@ -1,19 +1,19 @@
+import { requireAdmin } from "@/lib/auth/guard";
 import prisma from "@/lib/prisma";
-import { PayRateTemplateSchema } from "@/lib/zod/schema";
-import { NextResponse } from "next/server";
+import { PayRateTemplateSchema } from "@/types/type-zod";
+import { NextRequest, NextResponse } from "next/server";
 
 // --- PUT TEMPLATE ---
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { error, session } = await requireAdmin(req);
+    if (error) return error;
+
   try {
     const body = await req.json();
-
-    // ✅ Validate với zod
     const parsed = PayRateTemplateSchema.partial().parse(body);
 
-    const { id } = params;
+    const { id } = await params;
+    
     if (!id) {
       return NextResponse.json({ error: "id is required" }, { status: 400 });
     }
@@ -61,8 +61,11 @@ export async function PUT(
 
 
 
-export async function DELETE(req: Request, context: { params: Promise<{ id: string }>}) {
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }>}) {
+  const { error, session } = await requireAdmin(req);
+  if (error) return error;
   const { id } = await context.params;
+
   if (!id) return NextResponse.json({ error: "id is required" }, { status: 400 });
 
   await prisma.payRateTemplate.delete({

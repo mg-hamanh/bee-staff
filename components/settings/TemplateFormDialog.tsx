@@ -26,7 +26,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { BonusMode } from "./BonusMode";
 import { BONUS_DESCRIPTIONS } from "@/constants/bonus-desc";
 import { toast } from "sonner";
-import { BonusLevelUI, PayRateTemplateUI } from "@/types/type";
+import { BonusLevelUI, PayRateTemplateUI } from "@/types/type-ui";
 import { useTemplates } from "./context/TemplatesProvider";
 
 interface TemplateFormDialogProps {

@@ -9,7 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import GrowthCell from "./GrowthCell";
 import { TargetCell } from "./TargetCell";
-import { BonusReport } from "@/types/type";
+import { BonusReport } from "@/types/type-ui";
 import { VisibleColumns } from "./hooks/useBonusReport";
 import { formatCurrency } from "@/utils/formatters";
 

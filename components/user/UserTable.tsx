@@ -112,7 +112,7 @@ export default function UserTable() {
           <TableRow>
             <TableHead>Tên</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Vai trờ</TableHead>
+            <TableHead>Vai trò</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -128,7 +128,7 @@ export default function UserTable() {
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.roleName}</TableCell>
+                <TableCell>{user.role}</TableCell>
                 <TableCell className="flex gap-2">
                   <Button
                     size="sm"

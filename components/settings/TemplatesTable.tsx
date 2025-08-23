@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Edit, Trash2, Users } from "lucide-react";
 import { TemplateFormDialog } from "./TemplateFormDialog";
 import { useTemplates } from "./context/TemplatesProvider";
-import { PayRateTemplateUI } from "@/types/type";
+import { PayRateTemplateUI } from "@/types/type-ui";
 import {
   Table,
   TableBody,

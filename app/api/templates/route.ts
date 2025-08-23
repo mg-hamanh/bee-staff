@@ -1,10 +1,13 @@
+import { requireAdmin } from "@/lib/auth/guard";
 import prisma from "@/lib/prisma";
-import { PayRateTemplateSchema } from "@/lib/zod/schema";
+import { PayRateTemplateSchema } from "@/types/type-zod";
 import { NextRequest, NextResponse } from "next/server";
 
 
 // --- GET ALL TEMPLATES ---
 export async function GET(req: NextRequest) {
+  const { error, session } = await requireAdmin(req);
+    if (error) return error;
   try {
     const templates = await prisma.payRateTemplate.findMany({
       include: {
@@ -32,48 +35,10 @@ export async function GET(req: NextRequest) {
 }
 
 
-// --- POST NEW TEMPLATE ---
-// export async function POST(req: Request) {
-//   const body = await req.json();
+export async function POST(req: NextRequest) {
+  const { error, session } = await requireAdmin(req);
+    if (error) return error;
 
-//   const template = await prisma.payRateTemplate.create({
-//     data: {
-//       name: body.name,
-//       bonusTemplates: {
-//         create: body.bonusTemplates?.map((bt: any) => ({
-//           type: bt.type,
-//           mode: bt.mode,
-//           description: bt.description,
-//           status: bt.status ?? false,
-//           bonusLevels: {
-//             create: bt.bonusLevels?.map((bl: any) => ({
-//               amount: bl.amount,
-//               unit: bl.unit,
-//               bonus: bl.bonus,
-//             })) || [],
-//           },
-//         })),
-//       },
-//     },
-//     include: {
-//       bonusTemplates: {
-//         include: {
-//           bonusLevels: true,
-//         },
-//       },
-//       users: true,
-//     },
-//   });
-
-//   return NextResponse.json({
-//     ...template,
-//     totalUser: template.users.length,
-//   });
-// }
-
-
-
-export async function POST(req: Request) {
   try {
     const body = await req.json();
 

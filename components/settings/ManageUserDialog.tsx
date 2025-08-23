@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash2, Search, Check } from "lucide-react";
 import { ConfirmationDialog } from "./ConfirmationDialog";
-import { PayRateTemplateUI } from "@/types/type";
+import { PayRateTemplateUI } from "@/types/type-ui";
 import { useTemplates } from "./context/TemplatesProvider";
 import { useUsers } from "./hooks/useUsers";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -41,7 +41,7 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import { User } from "@/lib/zod/schema";
+import { User } from "@/types/type-zod";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 

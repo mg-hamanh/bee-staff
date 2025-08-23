@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const UnitEnum = z.enum(["PERCENT", "VND"])
+export const RoleEnum = z.enum(["seller","cashier","leader"])
 // BonusLevel
 export const BonusLevelSchema = z.object({
   id: z.uuid().optional(),   // Prisma sẽ tự generate nếu không truyền
@@ -25,31 +26,22 @@ export const PayRateTemplateSchema = z.object({
   id: z.uuid().optional(),
   name: z.string(),
   bonusTemplates: z.array(BonusTemplateSchema).optional(),
-  users: z.array(z.any()).optional(),
-  totalUser: z.number().default(0)
 });
 
 
 export const UserSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   username: z.string().max(100).nullable().optional(),
   name: z.string().max(255).nullable().optional(),
   email: z.email().max(255).nullable().optional(),
   mobile: z.string().max(15).nullable().optional(),
-  roleName: z.string().max(100).nullable().optional(),
   depots: z.array(z.number().int()),
-  emailVerified: z.date().nullable().optional(),
   image: z.url().nullable().optional(),
-  roleId: z.number().int(),
-  createdAt: z.date().nullable().optional(),
-  updatedAt: z.date().nullable().optional(),
+  role: RoleEnum,
+  type: z.string().nullable().optional(),
   isAdmin: z.boolean().default(false),
+  isActive: z.boolean().default(true),
   payRateId: z.string().nullable().optional(),
-  // Quan hệ (Account[], Session[], PayRateTemplate?) 
-  // -> Tùy nhu cầu có thể bỏ hoặc define riêng
-  accounts: z.any().array().optional(),
-  sessions: z.any().array().optional(),
-  payRateTemplate: z.any().nullable().optional(),
   
 });
 

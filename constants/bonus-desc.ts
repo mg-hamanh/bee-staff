@@ -1,4 +1,5 @@
-import { PayRateTemplateUI } from "@/types/type";
+import { PayRateTemplateUI } from "@/types/type-ui";
+import { PayRateTemplate } from "@/types/type-zod";
 
 export const BONUS_DESCRIPTIONS: Array<{
   mode: number;
@@ -34,6 +35,7 @@ export const BONUS_DESCRIPTIONS: Array<{
 
 
 export const emptyTemplate: PayRateTemplateUI = {
+  id: Date.now().toString(),
   name: "",
   totalUser: 0,
   users: [],

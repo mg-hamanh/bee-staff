@@ -1,7 +1,7 @@
 // /app/admin/settings/context/TemplatesProvider.tsx
 "use client";
 
-import { PayRateTemplateUI } from "@/types/type";
+import { PayRateTemplateUI } from "@/types/type-ui";
 import {
   createContext,
   useContext,
