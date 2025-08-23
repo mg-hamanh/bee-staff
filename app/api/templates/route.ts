@@ -6,8 +6,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 // --- GET ALL TEMPLATES ---
 export async function GET(req: NextRequest) {
-  const { error } = await requireAdmin(req);
-    if (error) return error;
+  const result = await requireAdmin(req);
+if (result.error) return result.error;
   try {
     const templates = await prisma.payRateTemplate.findMany({
       include: {
@@ -35,8 +35,8 @@ export async function GET(req: NextRequest) {
 
 
 export async function POST(req: NextRequest) {
-  const { error } = await requireAdmin(req);
-    if (error) return error;
+  const result = await requireAdmin(req);
+if (result.error) return result.error;
 
   try {
     const body = await req.json();

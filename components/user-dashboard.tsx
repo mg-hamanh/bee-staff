@@ -48,12 +48,12 @@ export function UserDashboard() {
       }
     };
 
-    useEffect(() => {
-      toast.error(error);
-    }, [error]);
-
     fetchData();
   }, [session, period]);
+
+  useEffect(() => {
+    toast.error(error);
+  }, [error]);
 
   if (!data) {
     return (
