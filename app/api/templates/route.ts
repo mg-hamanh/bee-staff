@@ -6,8 +6,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 // --- GET ALL TEMPLATES ---
 export async function GET(req: NextRequest) {
-  const result = await requireAdmin(req);
-if (result.error) return result.error;
+  const auth = await requireAdmin(req);
+  if (auth.error) return auth.error;
   try {
     const templates = await prisma.payRateTemplate.findMany({
       include: {
