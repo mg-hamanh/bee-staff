@@ -170,7 +170,9 @@ export function TemplateFormDialog({
       ...template,
       bonusTemplates: template.bonusTemplates?.map((bt) => ({
         ...bt,
-        bonusLevels: bt.bonusLevels?.map(({ clientId: _, ...rest }) => rest),
+        bonusLevels: bt.bonusLevels?.map(
+          ({ clientId: _clientId, ...rest }) => rest
+        ),
       })),
     };
 

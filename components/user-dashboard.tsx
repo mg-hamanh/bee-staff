@@ -9,12 +9,13 @@ import { BonusReport } from "@/types/type-ui";
 import { useSession } from "@/context/SessionContext";
 import { formatCurrency, formatPercent, Period } from "@/utils/formatters";
 import SemiCircleChart from "./bee-ui/SemiCircleChart";
+import { toast } from "sonner";
 
 export function UserDashboard() {
   const [data, setData] = useState<BonusReport | null>(null);
   const [period, setPeriod] = useState<Period>("week");
   // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const { session } = useSession();
 
@@ -41,11 +42,15 @@ export function UserDashboard() {
         const result = await response.json();
         setData(result[0]);
       } catch (err) {
-        // setError(err instanceof Error ? err.message : "An error occurred");
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         // setLoading(false);
       }
     };
+
+    useEffect(() => {
+      toast.error(error);
+    }, [error]);
 
     fetchData();
   }, [session, period]);

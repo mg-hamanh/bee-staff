@@ -17,12 +17,22 @@ const eslintConfig = [
     ignores: ["lib/generated/prisma/**"],
   },
 
-  // hoặc nếu không muốn ignore mà chỉ disable rule
+  // Disable rule riêng cho prisma generated
   {
     files: ["lib/generated/prisma/**"],
     rules: {
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+
+  // Rule chung cho toàn project
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
     },
   },
 ];

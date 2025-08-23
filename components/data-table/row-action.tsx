@@ -1,6 +1,6 @@
 "use client";
 
-import { Row } from "@tanstack/react-table";
+// import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
 import {
@@ -14,9 +14,9 @@ import {
 
 import { Button } from "../ui/button";
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-}
+// interface DataTableRowActionsProps<TData> {
+//   row: Row<TData>;
+// }
 
 export function DataTableRowActions() {
   return (
