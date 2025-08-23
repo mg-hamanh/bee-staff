@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     }));
 
     return NextResponse.json(result);
-  } catch (error) {
+  } catch  {
     return NextResponse.json(
       { error: "Failed to fetch templates" },
       { status: 500 }
