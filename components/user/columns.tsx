@@ -1,7 +1,7 @@
 "use client";
 
 import { Checkbox } from "../ui/checkbox";
-import { Badge } from "../ui/badge";
+// import { Badge } from "../ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "../data-table/column-header";
@@ -112,6 +112,10 @@ export const columns: ColumnDef<UserUI>[] = [
   // },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <DataTableRowActions
+      // row={row}
+      />
+    ),
   },
 ];

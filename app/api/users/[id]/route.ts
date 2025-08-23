@@ -7,7 +7,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error, session } = await requireAdmin(req);
+  const { error } = await requireAdmin(req);
   if (error) return error;
 
   try {
@@ -43,7 +43,7 @@ export async function PUT(
 
 
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }>}) {
-  const { error, session } = await requireAdmin(req);
+  const { error } = await requireAdmin(req);
   if (error) return error;
   const { id } = await context.params;
   

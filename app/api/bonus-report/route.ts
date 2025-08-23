@@ -17,9 +17,10 @@ export async function POST(req: NextRequest) {
       date: data,
     });
     return NextResponse.json(reports);
-  } catch (err: any) {
-    console.error("API /bonus-report error:", err); // 👈 log
+  } catch (err: unknown) {
+  if (err instanceof Error) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
+  return NextResponse.json({ error: "Unknown error" }, { status: 500 });
 }
-
+}

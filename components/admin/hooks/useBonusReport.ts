@@ -37,8 +37,8 @@ export function useBonusReport(): UseSaleReportReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [period, setPeriod] = useState<Period>('month')
-  const [depotIds, setDepotIds] =useState<number[]>([])
+  // const [period, setPeriod] = useState<Period>('month')
+  // const [depotIds, setDepotIds] =useState<number[]>([])
 
   const [visibleColumns, setVisibleColumns] = useState<VisibleColumns>({
     name: true,
@@ -65,7 +65,7 @@ export function useBonusReport(): UseSaleReportReturn {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            period,
+            period : "month",
           }),
         });
         if (!res.ok) throw new Error("Failed to fetch report");
@@ -73,14 +73,19 @@ export function useBonusReport(): UseSaleReportReturn {
         setData(result);
         console.log(result);
         
-      } catch (err: any) {
+      } catch (err: unknown) {
+        if (err instanceof Error) {
         setError(err.message);
+        }
+        setError("Unknown error")
       } finally {
         setLoading(false);
       }
     }
     loadData();
-  }, [period]);
+  }, []);
+
+  
 
   const toggleColumn = (col: VisibleColumnKey) => {
     setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));

@@ -17,15 +17,10 @@ export default function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const handleSignInWithGoogle = async () => {
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/man",
-      });
-    } catch (error: any) {
-      const message = error.error.message || "Lỗi đăng nhập!";
-      toast.error(message);
-    }
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/man",
+    });
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

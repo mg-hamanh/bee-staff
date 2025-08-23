@@ -61,7 +61,7 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (user, ctx) => {
+        before: async (user) => {
           // Kiểm tra email tồn tại trong DB của anh
           const existing = await prisma.user.findUnique({
             where: { email: user.email },

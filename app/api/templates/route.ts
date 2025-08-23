@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // --- GET ALL TEMPLATES ---
 export async function GET(req: NextRequest) {
-  const { error, session } = await requireAdmin(req);
+  const { error } = await requireAdmin(req);
     if (error) return error;
   try {
     const templates = await prisma.payRateTemplate.findMany({
@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Error fetching templates:", error);
     return NextResponse.json(
       { error: "Failed to fetch templates" },
       { status: 500 }
@@ -36,7 +35,7 @@ export async function GET(req: NextRequest) {
 
 
 export async function POST(req: NextRequest) {
-  const { error, session } = await requireAdmin(req);
+  const { error } = await requireAdmin(req);
     if (error) return error;
 
   try {

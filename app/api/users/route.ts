@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; // prisma client của bạn
 import { UserSchema } from "@/types/type-zod";
 import { requireAdmin, requireAuth } from "@/lib/auth/guard";
+import { User } from "@/lib/generated/prisma";
 
 
 export async function GET(req: NextRequest) {
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
 
     if (error) return error;
 
-    let users: any[] = [];
+    let users: User[] = [];
 
     if (session!.user.isAdmin) {
       // Admin => thấy tất cả
@@ -50,7 +51,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   // ✅ chỉ cho admin
-  const { error, session } = await requireAdmin(req);
+  const { error } = await requireAdmin(req);
   if (error) return error;
 
   try {

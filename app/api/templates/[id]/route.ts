@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // --- PUT TEMPLATE ---
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { error, session } = await requireAdmin(req);
+  const { error } = await requireAdmin(req);
     if (error) return error;
 
   try {
@@ -50,19 +50,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...updated,
       totalUser: updated.users.length,
     });
-  } catch (error: any) {
-    console.error("Error updating template:", error);
-    return NextResponse.json(
-      { error: error.message ?? "Không thể cập nhật mẫu" },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+  if (err instanceof Error) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
+  return NextResponse.json({ error: "Unknown error" }, { status: 500 });
+}
 }
 
 
 
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }>}) {
-  const { error, session } = await requireAdmin(req);
+  const { error } = await requireAdmin(req);
   if (error) return error;
   const { id } = await context.params;
 

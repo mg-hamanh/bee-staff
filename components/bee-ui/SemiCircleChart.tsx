@@ -1,5 +1,12 @@
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  TooltipItem,
+  ChartType,
+} from "chart.js";
 import { formatCurrency } from "@/utils/formatters";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -35,7 +42,7 @@ export default function SemiCircleChart({
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: function (context: any) {
+          label: function (context: TooltipItem<ChartType>) {
             return `${context.label}: ${context.parsed}%`;
           },
         },

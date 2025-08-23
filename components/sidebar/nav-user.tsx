@@ -23,7 +23,7 @@ import { useSession } from "@/context/SessionContext";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { session, isPending, error, refetch } = useSession();
+  const { session, isPending, error } = useSession();
 
   if (isPending) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;

@@ -54,15 +54,18 @@ export function TemplateFormDialog({
 
   if (!template) return null;
 
-  const handleFieldChange = (field: keyof PayRateTemplateUI, value: any) => {
+  const handleFieldChange = <K extends keyof PayRateTemplateUI>(
+    field: K,
+    value: PayRateTemplateUI[K]
+  ) => {
     setTemplate((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
-  const updateLevel = (
+  const updateLevel = <K extends keyof BonusLevelUI>(
     bonusKey: string,
     levelKey: string,
-    field: keyof BonusLevelUI,
-    value: any
+    field: K,
+    value: BonusLevelUI[K]
   ) => {
     setTemplate((prev) => {
       if (!prev) return prev;
@@ -71,7 +74,7 @@ export function TemplateFormDialog({
         bt.id === bonusKey || bt.clientId === bonusKey
           ? {
               ...bt,
-              bonusLevels: bt.bonusLevels?.map((l: any) =>
+              bonusLevels: bt.bonusLevels?.map((l) =>
                 l.id === levelKey || l.clientId === levelKey
                   ? { ...l, [field]: value }
                   : l
@@ -84,10 +87,12 @@ export function TemplateFormDialog({
     });
   };
 
-  const updateBonusTemplate = (
+  const updateBonusTemplate = <
+    K extends keyof NonNullable<PayRateTemplateUI["bonusTemplates"]>[number]
+  >(
     bonusKey: string,
-    field: keyof NonNullable<PayRateTemplateUI["bonusTemplates"]>[number],
-    value: any
+    field: K,
+    value: NonNullable<PayRateTemplateUI["bonusTemplates"]>[number][K]
   ) => {
     setTemplate((prev) => {
       if (!prev) return prev;
@@ -114,7 +119,7 @@ export function TemplateFormDialog({
                 ...(bt.bonusLevels ?? []),
                 {
                   clientId: Date.now().toString(),
-                  unit: "PERCENT" as "PERCENT",
+                  unit: "PERCENT" as const,
                   bonus: 0,
                   amount: 0,
                 },
@@ -137,7 +142,8 @@ export function TemplateFormDialog({
           ? {
               ...bt,
               bonusLevels: bt.bonusLevels?.filter(
-                (l: any) => l.id !== levelKey && l.clientId !== levelKey
+                (l: BonusLevelUI) =>
+                  l.id !== levelKey && l.clientId !== levelKey
               ),
             }
           : bt
@@ -164,7 +170,7 @@ export function TemplateFormDialog({
       ...template,
       bonusTemplates: template.bonusTemplates?.map((bt) => ({
         ...bt,
-        bonusLevels: bt.bonusLevels?.map(({ clientId, ...rest }) => rest),
+        bonusLevels: bt.bonusLevels?.map(({ clientId: _, ...rest }) => rest),
       })),
     };
 

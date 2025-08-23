@@ -1,5 +1,3 @@
-// /app/admin/settings/components/ManageUsersDialog.tsx
-
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
@@ -18,19 +16,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, Search, Check } from "lucide-react";
-import { ConfirmationDialog } from "./ConfirmationDialog";
+import { Trash2 } from "lucide-react";
 import { PayRateTemplateUI } from "@/types/type-ui";
-import { useTemplates } from "./context/TemplatesProvider";
 import { useUsers } from "./hooks/useUsers";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
@@ -41,9 +30,6 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import { User } from "@/types/type-zod";
-import { cn } from "@/lib/utils";
-import { Label } from "../ui/label";
 
 interface ManageUsersDialogProps {
   isOpen: boolean;
@@ -56,85 +42,13 @@ export function ManageUsersDialog({
   onOpenChange,
   templateToEdit,
 }: ManageUsersDialogProps) {
-  const { updateTemplate } = useTemplates();
   const { users: allUsers } = useUsers();
   const [currentTemplate, setCurrentTemplate] =
     useState<PayRateTemplateUI | null>(templateToEdit);
 
-  const [selectedNewUser, setSelectedNewUser] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState("");
-  // const [confirmState, setConfirmState] = useState<{
-  //   open: boolean;
-  //   user: User | null;
-  //   message: string;
-  // }>({ open: false, user: null, message: "" });
-
   useEffect(() => {
     setCurrentTemplate(templateToEdit);
   }, [templateToEdit]);
-
-  // const assignedUserIds = useMemo(
-  //   () => new Set(currentTemplate?.users?.map((u) => u.id) || []),
-  //   [currentTemplate?.users]
-  // );
-
-  // const availableUsers = useMemo(
-  //   () =>
-  //     allUsers
-  //       .filter((user) => !assignedUserIds.has(user.id))
-  //       .filter(
-  //         (user) =>
-  //           user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //           user.id.toLowerCase().includes(searchTerm.toLowerCase())
-  //       ),
-  //   [allUsers, assignedUserIds, searchTerm]
-  // );
-
-  // const performAddUser = (userToAdd: User) => {
-  //   const updatedUsers = [...(currentTemplate.users || []), userToAdd];
-  //   setCurrentTemplate({
-  //     ...currentTemplate,
-  //     users: updatedUsers,
-  //     totalUser: updatedUsers.length,
-  //   });
-  //   setSelectedNewUser("");
-  // };
-
-  // const handleAddUser = () => {
-  //   const userToAdd = allUsers.find((u) => u.id === selectedNewUser);
-  //   if (!userToAdd) return;
-
-  //   if (userToAdd.payRateId && userToAdd.payRateId !== currentTemplate.id) {
-  //     setConfirmState({
-  //       open: true,
-  //       user: userToAdd,
-  //       message: `Nhân viên ${userToAdd.name} đã thuộc một mẫu lương khác. Bạn có chắc muốn thay đổi?`,
-  //     });
-  //   } else {
-  //     performAddUser(userToAdd);
-  //   }
-  // };
-
-  // const handleConfirmAddUser = () => {
-  //   if (confirmState.user) {
-  //     performAddUser(confirmState.user);
-  //   }
-  // };
-
-  // const handleRemoveUser = (userId: string) => {
-  //   const updatedUsers =
-  //     currentTemplate.users?.filter((u) => u.id !== userId) || [];
-  //   setCurrentTemplate({
-  //     ...currentTemplate,
-  //     users: updatedUsers,
-  //     totalUser: updatedUsers.length,
-  //   });
-  // };
-
-  // const handleSave = () => {
-  //   onSave(currentTemplate);
-  //   onOpenChange(false);
-  // };
 
   return (
     <>
@@ -215,13 +129,6 @@ export function ManageUsersDialog({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {/* <ConfirmationDialog
-        open={confirmState.open}
-        onOpenChange={(open) => setConfirmState((prev) => ({ ...prev, open }))}
-        title="Xác nhận thay đổi"
-        message={confirmState.message}
-        onConfirm={handleConfirmAddUser}
-      /> */}
     </>
   );
 }

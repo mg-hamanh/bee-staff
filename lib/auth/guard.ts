@@ -23,7 +23,7 @@ export async function requireAuth(
   }
 
   // Check role
-  if (options.roles && !options.roles.includes(session.user.role as any)) {
+  if (options.roles && (!session.user.role || !options.roles.includes(session.user.role))) {
     return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
   }
 

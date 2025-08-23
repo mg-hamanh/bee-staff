@@ -19,7 +19,7 @@ import { emptyTemplate } from "@/constants/bonus-desc";
 import { ManageUsersDialog } from "./ManageUserDialog";
 
 export default function TemplatesTable() {
-  const { loading, templates, deleteTemplate } = useTemplates();
+  const { templates, deleteTemplate } = useTemplates();
   const [editingTemplate, setEditingTemplate] =
     useState<PayRateTemplateUI | null>(null);
   const [openForm, setOpenForm] = useState(false);
@@ -91,7 +91,7 @@ export default function TemplatesTable() {
         isOpen={openForm}
         onOpenChange={() => {
           setEditingTemplate(null);
-          setOpenForm;
+          setOpenForm(false);
         }}
         templateToEdit={editingTemplate}
       />

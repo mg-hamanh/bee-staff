@@ -17,7 +17,6 @@ type SearchBarProps = {
 export default function SearchBar({
   placeholder = "Search...",
   expandable = false,
-  expandData = [],
   onSearch,
 }: SearchBarProps) {
   const [searchText, setSearchText] = useState("");

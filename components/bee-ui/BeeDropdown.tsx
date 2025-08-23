@@ -18,7 +18,7 @@ interface BeeDropdown<T> {
   onChange?: (selectedKeys: Array<T[keyof T]>) => void;
 }
 
-export default function BeeDropdown<T extends Record<string, any>>({
+export default function BeeDropdown<T extends Record<string, unknown>>({
   data,
   keyField,
   labelField,
