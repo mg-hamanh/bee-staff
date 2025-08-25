@@ -4,8 +4,8 @@ import { customSession, oneTap } from 'better-auth/plugins'
 import { APIError } from "better-auth/api";
 
 import prisma from './prisma'
-import { User } from './generated/prisma';
 import { findUserDepots } from '@/utils/server';
+import { User } from '@prisma/client';
 
 
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; // prisma client của bạn
 import { UserSchema } from "@/types/type-zod";
 import { requireAdmin, requireAuth } from "@/lib/auth/guard";
-import { User } from "@/lib/generated/prisma";
+import { User } from "@prisma/client";
 
 
 export async function GET(req: NextRequest) {

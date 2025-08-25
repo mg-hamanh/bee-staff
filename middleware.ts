@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
 
   // If there is a session and the user tries to access /sign-in, redirect them to the home page
   if (session && path === "/sign-in") {
-    return NextResponse.rewrite(new URL("/man", request.url));
+    return NextResponse.rewrite(new URL("/man/EmployerBonus", request.url));
   }
 
   return NextResponse.next();
