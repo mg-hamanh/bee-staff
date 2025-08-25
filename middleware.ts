@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   const path = url.pathname;
 
   // Paths that should always be publicly accessible
-  const publicPaths = ["/sign-in", "/api/auth/callback/google", "/api/auth/sign-in/social"];
+  const publicPaths = ["/sign-in", "/api/auth/"];
 
   // Check if the current path is one of the public paths
   const isPublicPath = publicPaths.some((p) => path.startsWith(p));
@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
 
   // If there is a session and the user tries to access /sign-in, redirect them to the home page
   if (session && path === "/sign-in") {
-    return NextResponse.rewrite(new URL("/man/EmployerBonus", request.url));
+    return NextResponse.redirect(new URL("/man/EmployerBonus", request.url));
   }
 
   return NextResponse.next();
