@@ -91,7 +91,8 @@ export const auth = betterAuth({
   trustedOrigins: [
     'http://localhost:9999',
     'https://admin.beeshoes.com.vn',
-    'https://pos.beeshoes.com.vn'
+    'https://pos.beeshoes.com.vn',
+    'https://staff.beeshoes.com.vn'
   ],
   plugins: [
     oneTap(),
