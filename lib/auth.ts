@@ -50,7 +50,7 @@ export const auth = betterAuth({
     },
   },
   secret: process.env.BETTER_AUTH_SECRET,
-  authUrl: process.env.BETTER_AUTH_URL,
+  authUrl: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID || '',
