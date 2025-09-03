@@ -1,11 +1,12 @@
 import { createAuthClient } from "better-auth/react"
-import { oneTapClient  } from "better-auth/client/plugins"
+import { emailOTPClient, oneTapClient  } from "better-auth/client/plugins"
 
 export const authClient = createAuthClient({
     /** The base URL of the server (optional if you're using the same domain) */
     baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
 
     plugins: [
+        emailOTPClient(),
         oneTapClient({
             clientId: process.env.GOOGLE_CLIENT_ID || '',
             autoSelect: true, // Hiển thị tên + email nếu đã đăng nhập trước đó

@@ -12,6 +12,7 @@ export async function requireAuth(
   options: RequireAuthOptions = {}
 ) {
   const session = await auth.api.getSession({ headers: req.headers });
+  
 
   if (!session || !session.user.isActive) {
     return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };

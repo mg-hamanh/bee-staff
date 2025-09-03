@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -24,10 +25,6 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      <div className="text-muted-foreground flex-1 text-sm">
-        {table.getFilteredSelectedRowModel().rows.length} /{" "}
-        {table.getFilteredRowModel().rows.length} dòng đã chọn.
-      </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Hiển thị</p>
@@ -37,7 +34,7 @@ export function DataTablePagination<TData>({
               table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger className="h-8 w-[70px]">
+            <SelectTrigger className="h-8 bg-white">
               <SelectValue
                 placeholder={`${table.getState().pagination.pageSize}`}
               />
@@ -51,10 +48,7 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Trang {table.getState().pagination.pageIndex + 1} /{" "}
-          {table.getPageCount()}
-        </div>
+
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
@@ -76,6 +70,11 @@ export function DataTablePagination<TData>({
             <span className="sr-only">Go to previous page</span>
             <ChevronLeft />
           </Button>
+          <Input
+            placeholder={String(table.getState().pagination.pageIndex + 1)}
+            readOnly
+            className="w-10 h-8 bg-white"
+          />
           <Button
             variant="outline"
             size="icon"
@@ -97,6 +96,10 @@ export function DataTablePagination<TData>({
             <ChevronsRight />
           </Button>
         </div>
+        {/* <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          Trang {table.getState().pagination.pageIndex + 1} /{" "}
+          {table.getPageCount()}
+        </div> */}
       </div>
     </div>
   );

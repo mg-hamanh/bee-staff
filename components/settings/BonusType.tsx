@@ -16,20 +16,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-const types = [
-  {
-    value: 1,
-    label: "Theo doanh thu cá nhân",
-  },
-];
+import { types } from "@/constants/bonus-desc";
 
 interface props {
   onChange: (value: number) => void;
   type: number;
+  readonly?: boolean;
 }
 
-export function BonusType({ type, onChange }: props) {
+export function BonusType({ type, readonly, onChange }: props) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -40,6 +35,7 @@ export function BonusType({ type, onChange }: props) {
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
+          disabled={readonly || false}
         >
           {type
             ? types.find((t) => t.value === type)?.label

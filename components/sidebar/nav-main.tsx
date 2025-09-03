@@ -38,52 +38,71 @@ export function NavMain() {
       <SidebarMenu>
         {items.map((item) => {
           const active = isItemActive(item);
+          const hasSubItems = item.items && item.items.length > 0;
 
+          if (hasSubItems) {
+            return (
+              <Collapsible
+                key={item.title}
+                asChild
+                defaultOpen={active} // Mở collapsible nếu item hoặc subitem active
+                className="group/collapsible"
+              >
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      className={active ? "bg-blue-100 text-blue-700" : ""}
+                    >
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                      {item.items && (
+                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      )}
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  {item.items && (
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items.map((subItem) => {
+                          const subActive = subItem.url === pathname;
+                          return (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <Link
+                                  href={subItem.url}
+                                  className={
+                                    subActive ? "bg-blue-100 text-blue-700" : ""
+                                  }
+                                >
+                                  <span>{subItem.title}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          );
+                        })}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  )}
+                </SidebarMenuItem>
+              </Collapsible>
+            );
+          }
+
+          // TRƯỜNG HỢP 2: Item không có menu con -> Dùng Link trực tiếp
           return (
-            <Collapsible
-              key={item.title}
-              asChild
-              defaultOpen={active} // Mở collapsible nếu item hoặc subitem active
-              className="group/collapsible"
-            >
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton
-                    tooltip={item.title}
-                    className={active ? "bg-blue-100 text-blue-700" : ""}
-                  >
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                    {item.items && (
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                    )}
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                {item.items && (
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items.map((subItem) => {
-                        const subActive = subItem.url === pathname;
-                        return (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton asChild>
-                              <Link
-                                href={subItem.url}
-                                className={
-                                  subActive ? "bg-blue-100 text-blue-700" : ""
-                                }
-                              >
-                                <span>{subItem.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        );
-                      })}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                )}
-              </SidebarMenuItem>
-            </Collapsible>
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                className={active ? "bg-blue-100 text-blue-700" : ""}
+              >
+                <Link href={item.url}>
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           );
         })}
       </SidebarMenu>

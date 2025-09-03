@@ -27,7 +27,7 @@ import { BonusMode } from "./BonusMode";
 import { BONUS_DESCRIPTIONS } from "@/constants/bonus-desc";
 import { toast } from "sonner";
 import { BonusLevelUI, PayRateTemplateUI } from "@/types/type-ui";
-import { useTemplates } from "./context/TemplatesProvider";
+import { useTemplates } from "@/context/TemplatesProvider";
 
 interface TemplateFormDialogProps {
   isOpen: boolean;
@@ -222,7 +222,7 @@ export function TemplateFormDialog({
             {template.id ? "Chỉnh sửa mẫu" : "Thêm mẫu mới áp dụng"}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex-1 flex flex-col px-10 py-4 bg-primary/5 gap-4">
+        <div className="flex-1 flex flex-col px-10 py-4 bg-accent gap-4">
           <div className="flex items-center gap-10 p-4 bg-white rounded-lg">
             <Label htmlFor="name">Mẫu áp dụng</Label>
             <Input

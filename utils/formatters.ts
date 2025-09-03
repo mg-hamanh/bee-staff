@@ -8,6 +8,10 @@ export function formatCurrency(value: string | number) {
   }).format(typeof value === "string" ? parseInt(value) : value)
 }
 
+export function formatNumber(value: string | number) {
+  return new Intl.NumberFormat("vi-VN").format(typeof value === "string" ? parseInt(value) : value)
+}
+
 export function formatPercent(value: string | number) {
   const num = typeof value === "string" ? parseFloat(value) : value
   if (isNaN(num)) return "-"

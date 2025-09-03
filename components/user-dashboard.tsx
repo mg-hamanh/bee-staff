@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 export function UserDashboard() {
   const [data, setData] = useState<BonusReport | null>(null);
-  const [period, setPeriod] = useState<Period>("week");
+  const [period, setPeriod] = useState<Period>("month");
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

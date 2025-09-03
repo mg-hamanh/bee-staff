@@ -1,11 +1,12 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { customSession, oneTap } from 'better-auth/plugins'
+import { customSession, emailOTP, oneTap } from 'better-auth/plugins'
 import { APIError } from "better-auth/api";
 
 import prisma from './prisma'
 import { findUserDepots } from '@/utils/server';
 import { User } from '@prisma/client';
+import { transporter } from './mailer';
 
 
 
@@ -40,6 +41,12 @@ export const auth = betterAuth({
         type: 'boolean',
         required: false,
         defaultValue: false,
+        input: false,
+      },
+      isActive: {
+        type: 'boolean',
+        required: false,
+        defaultValue: true,
         input: false,
       },
       payRateId: {
@@ -96,6 +103,27 @@ export const auth = betterAuth({
   ],
   plugins: [
     oneTap(),
+    emailOTP({
+          
+          async sendVerificationOTP({ email, otp, type }) {
+            const user = await prisma.user.findUnique({ where: { email } });
+            if (!user) {
+              throw new APIError("UNAUTHORIZED", { message: "User not found" });
+            }
+            try {
+              await transporter.sendMail({
+                from: process.env.MAIL_FROM || 'noreply@beeshoes.com.vn',
+                to: email,
+                subject: `Your ${type} verification code`,
+                text: `Your verification code is: ${otp}`,
+                html: `<p>Your verification code is: <strong>${otp}</strong></p>`,
+              });
+            } catch (error) {
+              console.error('Error sending verification email:', error);
+              throw new Error('Failed to send verification email');
+            }
+          }
+        }),
     customSession(async ({ user, session }) => {
       const u = user as unknown as User;
 

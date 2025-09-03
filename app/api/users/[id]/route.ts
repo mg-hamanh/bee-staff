@@ -24,7 +24,7 @@ export async function PUT(
         name: parsed.name || '',
         email: parsed.email,
         mobile: parsed.mobile,
-        depots: parsed.depots,
+        depots: parsed.depots || [],
         image: parsed.image,
         role: parsed.role,
         isActive: parsed.isActive,

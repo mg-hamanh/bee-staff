@@ -1,31 +1,83 @@
 // middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import {  headers } from "next/headers";
+import { headers } from "next/headers";
+
+// It's a good practice to define this object outside the middleware function
+// for clarity and potential reuse.
+const requiredRoles: { [key: string]: {
+  roles?: string[];
+  status?: "active" | "inactive" | "future";
+} } = {
+  "/sign-in": { roles: [] },
+  "/man/Dashboard": { roles: [] },
+
+  "/man/Employee": { roles: ["admin", "leader"] },
+  "/man/Paysheet": { roles: ["admin", "leader"] },
+  
+  "/man/EmployerSetting": { roles: ["admin"] },
+  
+  "/man/WeeklyReport": { roles: ["admin", "leader"], status: "future" },
+};
 
 export async function middleware(request: NextRequest) {
-  
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-    
 
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // Paths that should always be publicly accessible
-  const publicPaths = ["/sign-in", "/api/auth/"];
+  const isApiRoute = path.startsWith("/api/");
 
-  // Check if the current path is one of the public paths
-  const isPublicPath = publicPaths.some((p) => path.startsWith(p));
+   if (isApiRoute) {
+    return NextResponse.next();
+  }
+  
+  const routeConfig = requiredRoles[path];
+  const userRole = session?.user?.role;
+  const isAdmin = session?.user?.isAdmin;
+  const isAuthenticated = !!session;
 
-  // If there's no session and the user is not on a public path, redirect them to sign-in 
-  if (!session && !isPublicPath) {     
-    return NextResponse.redirect(new URL("/sign-in", request.url)); }
+  // Nếu path không được định nghĩa, redirect nếu đã xác thực
+  if (typeof routeConfig === 'undefined') {
+    if (isAuthenticated) {
+      return NextResponse.redirect(new URL("/man/Dashboard", request.url));
+    }
+  }
 
-  // If there is a session and the user tries to access /sign-in, redirect them to the home page
-  if (session && path === "/sign-in") {
-    return NextResponse.redirect(new URL("/man/EmployerBonus", request.url));
+  // Xử lý các đường dẫn công khai và các trường hợp đặc biệt
+  if (routeConfig) {
+      // Trường hợp 1: Route không hoạt động hoặc chưa ra mắt
+      if (routeConfig.status === "inactive" || routeConfig.status === "future") {
+        const refererUrl = request.headers.get('referer');
+          const redirectUrl = new URL(refererUrl || "/man/Dashboard", request.url);
+          redirectUrl.searchParams.set("error", routeConfig.status);
+          return NextResponse.redirect(redirectUrl);
+      }
+      
+      // Trường hợp 2: Route công khai (roles trống)
+      if (routeConfig.roles?.length === 0) {
+          if (!isAuthenticated && path !== "/sign-in") {
+              return NextResponse.redirect(new URL("/sign-in", request.url));
+          }
+          return NextResponse.next();
+      }
+
+      // Trường hợp 3: Route yêu cầu vai trò
+      if (Array.isArray(routeConfig.roles) && routeConfig.roles.length > 0) {
+          if (!isAuthenticated) {
+              return NextResponse.redirect(new URL("/sign-in", request.url));
+          }
+
+          if (isAdmin || (typeof userRole === "string" && routeConfig.roles.includes(userRole))) {
+              return NextResponse.next();
+          } else {
+              const redirectUrl = new URL("/man/Dashboard", request.url);
+              redirectUrl.searchParams.set("error", "access_denied");
+              return NextResponse.redirect(redirectUrl);
+          }
+      }
   }
 
   return NextResponse.next();
@@ -33,6 +85,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   runtime: "nodejs",
-  matcher: [ "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|gif|webp|ico)).*)"], // Apply to all routes except static, image, and favicon
-};`   `
-
+  matcher: ["/api/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|gif|webp|ico)).*)"],
+};

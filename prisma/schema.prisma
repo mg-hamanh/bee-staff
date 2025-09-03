@@ -245,6 +245,7 @@ model User {
   payRateId       String?          @map("pay_rate_id")
   accounts        Account[]
   sessions        Session[]
+  payslips        Payslip[]
   payRateTemplate PayRateTemplate? @relation(fields: [payRateId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("users")
@@ -259,6 +260,87 @@ model Verification {
   updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
   @@map("verification")
+}
+
+model Paysheet {
+  id               String   @id @default(uuid())
+  code             String   @unique
+  name             String
+  startTime        DateTime @map("start_time")
+  endTime          DateTime @map("end_time")
+  periodId         Int      @map("period_id")
+  periodName       String   @map("period_name")
+  createdDate      DateTime @default(now()) @map("created_date")
+  createdById      String   @map("created_by_id")
+  modifiedDate     DateTime @updatedAt @map("modified_date")
+  modifiedById     String   @map("modified_by_id")
+  status           Int
+  workingDayNumber Int      @map("working_day_number")
+  employeeTotal    Int      @map("employee_total")
+  totalNetSalary   Float    @map("total_net_salary")
+  totalBonus       Float    @map("total_bonus")
+  totalPayment     Float    @map("total_payment")
+  totalNeedPay     Float    @map("total_need_pay")
+  note             String?
+  isDeleted        Boolean  @default(false) @map("is_deleted")
+
+  payslips Payslip[]
+
+  @@map("paysheets")
+}
+
+model Payslip {
+  id               String   @id @default(uuid())
+  code             String   @unique /// Mã phiếu lương duy nhất (ví dụ: "PL000007")
+  paysheetId       String   @map("paysheet_id") /// Khóa ngoại, liên kết đến bảng Paysheet
+  employeeId       String   @map("employee_id") /// Khóa ngoại, liên kết đến bảng Employee
+  status           Int // Trạng thái phiếu lương (ví dụ: 1: Đã tính)
+  mainSalary       Float    @map("main_salary") /// Lương chính
+  commissionSalary Float    @map("commission_salary") /// Lương hoa hồng
+  overtimeSalary   Float    @map("overtime_salary") /// Lương làm thêm giờ
+  allowance        Float /// Tổng các khoản phụ cấp
+  deduction        Float /// Tổng các khoản khấu trừ
+  bonus            Float /// Tổng các khoản thưởng
+  netSalary        Float    @map("net_salary") /// Lương thực nhận (Tổng thu nhập - Khấu trừ)
+  grossSalary      Float    @map("gross_salary") /// Lương gộp (Lương trước khi trừ bảo hiểm, thuế...)
+  totalPayment     Float    @map("total_payment") /// Số tiền đã thanh toán cho nhân viên này
+  totalNeedPay     Float    @map("total_need_pay") /// Số tiền cần trả còn lại cho nhân viên này
+  createdDate      DateTime @default(now()) @map("created_date") /// Ngày tạo phiếu lương
+
+  // Dữ liệu JSON cho các quy tắc tính lương phức tạp, giúp lưu trữ linh hoạt
+  bonusSalaryRuleParam Json? @map("bonus_salary_rule_param") /// Tham số đầu vào để tính thưởng
+  allowanceRuleParam   Json? @map("allowance_rule_param") /// Tham số đầu vào để tính phụ cấp
+  deductionRuleParam   Json? @map("deduction_rule_param") /// Tham số đầu vào để tính khấu trừ
+
+  // Mối quan hệ: một phiếu lương thuộc về một bảng lương
+  paysheet       Paysheet        @relation(fields: [paysheetId], references: [id])
+  // Mối quan hệ: một phiếu lương thuộc về một nhân viên
+  employee       User            @relation(fields: [employeeId], references: [id])
+  // Mối quan hệ: một phiếu lương có nhiều chi tiết tính lương
+  payslipDetails PayslipDetail[]
+
+  @@map("payslips")
+}
+
+model PayslipDetail {
+  id        String @id @default(uuid())
+  payslipId String @map("payslip_id") /// Khóa ngoại, liên kết đến bảng Payslip
+  ruleType  String @map("rule_type") /// Loại quy tắc (ví dụ: "AllowanceRule", "BonusSalaryRule")
+  ruleValue Json   @map("rule_value") /// Cấu hình của quy tắc được áp dụng
+  ruleParam Json   @map("rule_param") /// Các tham số thực tế được dùng để tính toán theo quy tắc
+
+  // Mối quan hệ: Chi tiết này thuộc về phiếu lương nào
+  payslip Payslip @relation(fields: [payslipId], references: [id])
+
+  @@map("payslip_details")
+}
+
+model PayRollSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value Json?
+
+  @@map("pay_roll_settings")
 }
 
 model account_mode {

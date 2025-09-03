@@ -11,16 +11,27 @@ export const labels = [
 
 export const roles = [
   {
-    value: 1,
+    value: "seller",
     label: "Nhân viên bán hàng",
   },
   {
-    value: 2,
+    value: "cashier",
     label: "Nhân viên thu ngân",
   },
   {
-    value: 3,
+    value: "leader",
     label: "Cửa hàng trưởng",
+  },
+];
+
+export const status = [
+  {
+    value: true,
+    label: "Đang làm việc",
+  },
+  {
+    value: false,
+    label: "Đã nghỉ",
   },
 ];
 

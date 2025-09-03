@@ -1,13 +1,6 @@
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
+import { ArrowDown, ArrowUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Column } from "@tanstack/react-table";
 
@@ -27,40 +20,19 @@ export function DataTableColumnHeader<TData, TValue>({
   }
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="data-[state=open]:bg-accent -ml-3 h-8"
-          >
-            <span>{title}</span>
-            {column.getIsSorted() === "desc" ? (
-              <ArrowDown />
-            ) : column.getIsSorted() === "asc" ? (
-              <ArrowUp />
-            ) : (
-              <ChevronsUpDown />
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUp />
-            Asc
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDown />
-            Desc
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeOff />
-            Hide
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <Button
+      variant="ghost"
+      onClick={() => column.toggleSorting(undefined, false)}
+      className={cn("data-[state=open]:bg-accent px-0 gap-2 h-8", className)}
+    >
+      <span>{title}</span>
+      {column.getIsSorted() === "desc" ? (
+        <ArrowDown className="size-4" />
+      ) : column.getIsSorted() === "asc" ? (
+        <ArrowUp className="size-4" />
+      ) : (
+        ""
+      )}
+    </Button>
   );
 }

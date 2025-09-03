@@ -1,24 +1,23 @@
 import { PayRateTemplateUI } from "@/types/type-ui";
-import { PayRateTemplate } from "@/types/type-zod";
 
 export const BONUS_DESCRIPTIONS: Array<{
   mode: number;
   type: number;
   description: string; // để lưu DB, dùng string HTML hoặc plain text
-}> = [
+  }> = [
   {
     mode: 1,
     type: 1,
     description: `
-<p>
-  Thưởng được tính theo doanh thu thuần về bán hàng của nhân viên nằm trong mức thiết lập nào.<br />
-  Ví dụ:<br />
-  - Từ 0 đến 200,000 =&gt; 3%<br />
-  - Từ 200,000 đến 500,000 =&gt; 5%<br />
-  - Trên 500,000 =&gt; 10%<br />
-  Giả sử tổng doanh thu thuần về bán hàng của nhân viên là 700,000, thì tiền thưởng nhân viên nhận được là:<br />
-  700,000 * 10 % = 70,000
-</p>
+      <p>
+        Thưởng được tính theo doanh thu thuần về bán hàng của nhân viên nằm trong mức thiết lập nào.<br />
+        Ví dụ:<br />
+        - Từ 0 đến 200,000 =&gt; 3%<br />
+        - Từ 200,000 đến 500,000 =&gt; 5%<br />
+        - Trên 500,000 =&gt; 10%<br />
+        Giả sử tổng doanh thu thuần về bán hàng của nhân viên là 700,000, thì tiền thưởng nhân viên nhận được là:<br />
+        700,000 * 10 % = 70,000
+      </p>
     `,
   },
   {
@@ -33,6 +32,19 @@ export const BONUS_DESCRIPTIONS: Array<{
   },
 ];
 
+export const modes = [
+  {
+    value: 1,
+    label: "Tính theo mức tổng doanh thu",
+  },
+];
+
+export const types = [
+  {
+    value: 1,
+    label: "Theo doanh thu cá nhân",
+  },
+];
 
 export const emptyTemplate: PayRateTemplateUI = {
   id: Date.now().toString(),

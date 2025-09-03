@@ -26,7 +26,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   title?: string;
   options: {
     label: string;
-    value: string | number;
+    value: string | boolean | number;
     icon?: React.ComponentType<{ className?: string }>;
   }[];
 }
@@ -36,9 +36,8 @@ export function DataTableFacetedFilter<TData, TValue>({
   title,
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(
-    column?.getFilterValue() as (string | number)[]
+    column?.getFilterValue() as (string | boolean | number)[]
   );
 
   return (
@@ -57,7 +56,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 {selectedValues.size}
               </Badge>
               <div className="hidden gap-1 lg:flex">
-                {selectedValues.size > 2 ? (
+                {selectedValues.size > 1 ? (
                   <Badge
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
@@ -67,10 +66,10 @@ export function DataTableFacetedFilter<TData, TValue>({
                 ) : (
                   options
                     .filter((option) => selectedValues.has(option.value))
-                    .map((option) => (
+                    .map((option, index) => (
                       <Badge
                         variant="secondary"
-                        key={option.value}
+                        key={index}
                         className="rounded-sm px-1 font-normal"
                       >
                         {option.label}
@@ -88,11 +87,11 @@ export function DataTableFacetedFilter<TData, TValue>({
           <CommandList>
             <CommandEmpty>Không có kết quả.</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => {
+              {options.map((option, index) => {
                 const isSelected = selectedValues.has(option.value);
                 return (
                   <CommandItem
-                    key={option.value}
+                    key={index}
                     onSelect={() => {
                       if (isSelected) {
                         selectedValues.delete(option.value);
@@ -119,11 +118,6 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <option.icon className="text-muted-foreground size-4" />
                     )}
                     <span>{option.label}</span>
-                    {facets?.get(option.value) && (
-                      <span className="text-muted-foreground ml-auto flex size-4 items-center justify-center font-mono text-xs">
-                        {facets.get(option.value)}
-                      </span>
-                    )}
                   </CommandItem>
                 );
               })}

@@ -1,4 +1,4 @@
-import { FileChartColumnIncreasing, Frame, PieChart, Settings2, UsersRound } from "lucide-react";
+import { ChartBar, FileChartColumnIncreasing, Frame, PieChart, Settings2, UsersRound } from "lucide-react";
 
 export interface NavItem {
   title: string;
@@ -8,7 +8,11 @@ export interface NavItem {
 }
 
 export const navMain: NavItem[]= 
-   [
+   [{
+    title: "Tổng quan",
+    url: "/man/Dashboard",
+    icon: ChartBar,
+   },
     {
       title: "Nhân viên",
       url: "#",
@@ -19,12 +23,8 @@ export const navMain: NavItem[]=
           url: "/man/Employee",
         },
         {
-          title: "Thưởng",
-          url: "/man/EmployerBonus",
-        },
-        {
-          title: "Phạt",
-          url: "#",
+          title: "Bảng thưởng",
+          url: "/man/Paysheet",
         },
       ],
     },
@@ -34,12 +34,8 @@ export const navMain: NavItem[]=
       icon: FileChartColumnIncreasing,
       items: [
         {
-          title: "Thưởng nhân viên",
-          url: "/man/BonusReport",
-        },
-        {
-          title: "Phạt nhân viên",
-          url: "#",
+          title: "Báo cáo hàng tuần",
+          url: "/man/WeeklyReport",
         },
       ],
     },
@@ -50,7 +46,7 @@ export const navMain: NavItem[]=
       items: [
         {
           title: "Tính thưởng",
-          url: "/man/BonusSetting",
+          url: "/man/EmployerSetting",
         },
       ],
     },

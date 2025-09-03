@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
 import { PayRateTemplateUI } from "@/types/type-ui";
-import { useUsers } from "./hooks/useUsers";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Command,
@@ -30,6 +29,7 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
+import { useUsers } from "@/context/UsersProvider";
 
 interface ManageUsersDialogProps {
   isOpen: boolean;
