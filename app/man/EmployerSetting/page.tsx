@@ -1,13 +1,13 @@
 // /app/admin/settings/page.tsx
 
-import TemplatesTable from "@/components/settings/TemplatesTable";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { payRollSettings } from "@/constants/pay-roll-settings";
-import api from "@/lib/api-client";
-import { SettingValues } from "@/types/type-ui";
 import { FileClock } from "lucide-react";
+import api from "@/lib/api-client"; // Hoặc một instance axios dành cho server
+import { SettingValues } from "@/types/type-ui";
+import TemplatesTable from "@/components/settings/TemplatesTable";
 
 interface ApiResponse {
   data: SettingValues;
@@ -15,13 +15,28 @@ interface ApiResponse {
 }
 
 export default async function Page() {
-  const response = await api.get("/paysheets/settings");
-  const apiData: ApiResponse = response.data;
-  const dynamicSettings = apiData.data;
+  let dynamicSettings: SettingValues = {};
+
+  try {
+    // SỬA: Bọc cuộc gọi API trong try...catch để xử lý lỗi an toàn
+    const response = await api.get("/paysheets/settings");
+
+    // SỬA: Đảm bảo response.data tồn tại trước khi gán
+    const apiData: ApiResponse = response.data;
+    if (apiData && apiData.data) {
+      dynamicSettings = apiData.data;
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu cài đặt:", error);
+    // Có thể trả về một đối tượng rỗng để tránh crash
+    dynamicSettings = {};
+  }
+
   return (
     <div className="flex flex-col gap-2 mt-2">
       {payRollSettings.map((setting) => {
-        const dynamicValue = dynamicSettings[setting.code];
+        // SỬA: Sử dụng optional chaining để truy cập an toàn
+        const dynamicValue = dynamicSettings?.[setting.code];
         const IconComponent = setting.icon;
 
         const isSwitch = typeof dynamicValue === "boolean";
